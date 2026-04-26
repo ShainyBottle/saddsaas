@@ -1,11 +1,13 @@
 local Library = {}
 
--- Сервисы
-local UserInputService = game:GetService("UserInputService")
-local CoreGui = game:GetService("CoreGui")
-local TweenService = game:GetService("TweenService")
+local cloneref = cloneref or function(...)
+    return ...
+end
 
--- Хранилища состояний
+local UserInputService = cloneref(game:GetService("UserInputService"))
+local CoreGui = cloneref(game:GetService("CoreGui"))
+local TweenService = cloneref(game:GetService("TweenService"))
+
 local ToggleStates = {}
 local SliderValues = {}
 local UIElements = {}
@@ -20,7 +22,29 @@ local TabCounter = 0
 function Library:CreateLib(name, theme)
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = name
-    screenGui.Parent = CoreGui
+    
+    local success, err = pcall(function()
+        if protect_gui then
+            protect_gui(screenGui)
+        elseif syn and syn.protect_gui then
+            syn.protect_gui(screenGui)
+        end
+    end)
+    
+    local success2, err2 = pcall(function()
+        if gethui then
+            screenGui.Parent = gethui()
+        elseif get_hidden_gui then
+            screenGui.Parent = get_hidden_gui()
+        else
+            screenGui.Parent = CoreGui
+        end
+    end)
+    
+    if not pcall(function() return screenGui.Parent end) then
+        screenGui.Parent = CoreGui
+    end
+    
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
     local mainFrame = Instance.new("Frame")
