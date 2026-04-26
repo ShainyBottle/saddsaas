@@ -68,98 +68,15 @@ function Library:CreateLib(name, theme)
     local hiddenUI = getHiddenUI()
     screenGui.Parent = hiddenUI
     
-    local isMinimized = false
-    local isFullyHidden = false
-    local savedSize = Vector2.new(600, 400)
-    local savedPosition = Vector2.new(0, 0)
-    local minButtonSize = Vector2.new(40, 40)
-    
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, savedSize.X, 0, savedSize.Y)
-    mainFrame.Position = UDim2.new(0.5, -savedSize.X/2, 0.5, -savedSize.Y/2)
+    mainFrame.Size = UDim2.new(0, 600, 0, 400)
+    mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
     mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     mainFrame.BorderSizePixel = 0
     mainFrame.Parent = screenGui
     mainFrame.Active = true
     mainFrame.Draggable = true
-    mainFrame.ClipsDescendants = true
-
-    local minimizeButton = Instance.new("Frame")
-    minimizeButton.Name = "MinimizeButton"
-    minimizeButton.Size = UDim2.new(0, 40, 0, 40)
-    minimizeButton.Position = UDim2.new(0.5, -20, 0.5, -20)
-    minimizeButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    minimizeButton.BorderSizePixel = 1
-    minimizeButton.BorderColor3 = Color3.fromRGB(100, 100, 100)
-    minimizeButton.Parent = screenGui
-    minimizeButton.Visible = false
-    minimizeButton.Active = true
-    minimizeButton.Draggable = true
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = minimizeButton
-    
-    local minimizeIcon = Instance.new("TextLabel")
-    minimizeIcon.Size = UDim2.new(1, 0, 1, 0)
-    minimizeIcon.BackgroundTransparency = 1
-    minimizeIcon.Text = name:sub(1, 2)
-    minimizeIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-    minimizeIcon.TextSize = 16
-    minimizeIcon.Font = Enum.Font.Code
-    minimizeIcon.Parent = minimizeButton
-    
-    minimizeButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            if isFullyHidden then
-                return
-            end
-            isMinimized = false
-            mainFrame.Visible = true
-            minimizeButton.Visible = false
-            mainFrame:TweenSize(
-                UDim2.new(0, savedSize.X, 0, savedSize.Y),
-                Enum.EasingDirection.Out,
-                Enum.EasingStyle.Quart,
-                0.3,
-                true
-            )
-        end
-    end)
-    
-    minimizeButton.MouseButton2Click:Connect(function()
-        if isFullyHidden then
-            return
-        end
-        isMinimized = false
-        isFullyHidden = true
-        mainFrame.Visible = true
-        minimizeButton.Visible = false
-        mainFrame:TweenSize(
-            UDim2.new(0, savedSize.X, 0, savedSize.Y),
-            Enum.EasingDirection.Out,
-            Enum.EasingStyle.Quart,
-            0.3,
-            true
-        )
-        task.wait(0.3)
-        mainFrame.Visible = false
-    end)
-
-    UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if gameProcessed then return end
-        if input.KeyCode == Enum.KeyCode.LeftAlt or input.KeyCode == Enum.KeyCode.RightAlt then
-            if isFullyHidden then
-                isFullyHidden = false
-                isMinimized = false
-                mainFrame.Visible = true
-                minimizeButton.Visible = false
-                mainFrame.Size = UDim2.new(0, savedSize.X, 0, savedSize.Y)
-                mainFrame.Position = UDim2.new(0, savedPosition.X, 0, savedPosition.Y)
-            end
-        end
-    end)
 
     local topBar = Instance.new("Frame")
     topBar.Name = "TopBar"
@@ -169,7 +86,7 @@ function Library:CreateLib(name, theme)
     topBar.Parent = mainFrame
 
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -90, 1, 0)
+    titleLabel.Size = UDim2.new(1, -10, 1, 0)
     titleLabel.Position = UDim2.new(0, 10, 0, 0)
     titleLabel.BackgroundTransparency = 1
     titleLabel.Text = name
@@ -179,129 +96,19 @@ function Library:CreateLib(name, theme)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = topBar
 
-    local minimizeBtn = Instance.new("TextButton")
-    minimizeBtn.Size = UDim2.new(0, 26, 0, 26)
-    minimizeBtn.Position = UDim2.new(1, -84, 0, 2)
-    minimizeBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    minimizeBtn.BorderSizePixel = 1
-    minimizeBtn.BorderColor3 = Color3.fromRGB(60, 60, 60)
-    minimizeBtn.Text = "-"
-    minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    minimizeBtn.TextSize = 18
-    minimizeBtn.Font = Enum.Font.Code
-    minimizeBtn.Parent = topBar
-
-    local hideBtn = Instance.new("TextButton")
-    hideBtn.Size = UDim2.new(0, 26, 0, 26)
-    hideBtn.Position = UDim2.new(1, -56, 0, 2)
-    hideBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    hideBtn.BorderSizePixel = 1
-    hideBtn.BorderColor3 = Color3.fromRGB(60, 60, 60)
-    hideBtn.Text = "+"
-    hideBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    hideBtn.TextSize = 18
-    hideBtn.Font = Enum.Font.Code
-    hideBtn.Parent = topBar
-
     local closeButton = Instance.new("TextButton")
-    closeButton.Size = UDim2.new(0, 26, 0, 26)
-    closeButton.Position = UDim2.new(1, -28, 0, 2)
-    closeButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    closeButton.BorderSizePixel = 1
-    closeButton.BorderColor3 = Color3.fromRGB(60, 60, 60)
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -30, 0, 0)
+    closeButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    closeButton.BorderSizePixel = 0
     closeButton.Text = "X"
-    closeButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeButton.TextSize = 14
     closeButton.Font = Enum.Font.Code
     closeButton.Parent = topBar
 
-    minimizeBtn.MouseButton1Click:Connect(function()
-        isMinimized = true
-        savedPosition = Vector2.new(mainFrame.AbsolutePosition.X, mainFrame.AbsolutePosition.Y)
-        savedSize = Vector2.new(mainFrame.AbsoluteSize.X, mainFrame.AbsoluteSize.Y)
-        mainFrame:TweenSize(
-            UDim2.new(0, 0, 0, 0),
-            Enum.EasingDirection.In,
-            Enum.EasingStyle.Quart,
-            0.3,
-            true
-        )
-        task.wait(0.3)
-        mainFrame.Visible = false
-        minimizeButton.Position = UDim2.new(0, savedPosition.X + savedSize.X/2 - 20, 0, savedPosition.Y + savedSize.Y/2 - 20)
-        minimizeButton.Visible = true
-    end)
-
-    hideBtn.MouseButton1Click:Connect(function()
-        isFullyHidden = true
-        savedPosition = Vector2.new(mainFrame.AbsolutePosition.X, mainFrame.AbsolutePosition.Y)
-        savedSize = Vector2.new(mainFrame.AbsoluteSize.X, mainFrame.AbsoluteSize.Y)
-        mainFrame:TweenSize(
-            UDim2.new(0, 0, 0, 0),
-            Enum.EasingDirection.In,
-            Enum.EasingStyle.Quart,
-            0.3,
-            true
-        )
-        task.wait(0.3)
-        mainFrame.Visible = false
-        minimizeButton.Visible = false
-    end)
-
     closeButton.MouseButton1Click:Connect(function()
         screenGui:Destroy()
-    end)
-
-    local resizeHandle = Instance.new("Frame")
-    resizeHandle.Name = "ResizeHandle"
-    resizeHandle.Size = UDim2.new(0, 16, 0, 16)
-    resizeHandle.Position = UDim2.new(1, -16, 1, -16)
-    resizeHandle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-    resizeHandle.BorderSizePixel = 0
-    resizeHandle.Parent = mainFrame
-    resizeHandle.ZIndex = 10
-    
-    local resizeCorner = Instance.new("UICorner")
-    resizeCorner.CornerRadius = UDim.new(0, 3)
-    resizeCorner.Parent = resizeHandle
-    
-    local resizeTriangle = Instance.new("ImageLabel")
-    resizeTriangle.Size = UDim2.new(0, 10, 0, 10)
-    resizeTriangle.Position = UDim2.new(0, 3, 0, 3)
-    resizeTriangle.BackgroundTransparency = 1
-    resizeTriangle.Image = "rbxassetid://6466631158"
-    resizeTriangle.ImageColor3 = Color3.fromRGB(40, 40, 40)
-    resizeTriangle.ZIndex = 11
-    resizeTriangle.Parent = resizeHandle
-    
-    local resizing = false
-    local minWidth = 400
-    local minHeight = 250
-    
-    resizeHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            resizing = true
-            resizeHandle.BackgroundColor3 = CurrentColor
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if resizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local mousePos = UserInputService:GetMouseLocation()
-            local framePos = mainFrame.AbsolutePosition
-            local newWidth = math.max(minWidth, mousePos.X - framePos.X + 8)
-            local newHeight = math.max(minHeight, mousePos.Y - framePos.Y + 8)
-            savedSize = Vector2.new(newWidth, newHeight)
-            mainFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
-            mainFrame.Position = UDim2.new(0, framePos.X, 0, framePos.Y)
-        end
-    end)
-    
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            resizing = false
-            resizeHandle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        end
     end)
 
     local tabContainer = Instance.new("Frame")
@@ -1162,10 +969,6 @@ function Library:CreateLib(name, theme)
 
     function Library:GetSliderValue(id)
         return SliderValues[id] or 0
-    end
-    
-    function Library:Destroy()
-        screenGui:Destroy()
     end
 
     return Library
